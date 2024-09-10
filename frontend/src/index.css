@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+html.dim {
+  background-color: #121212;
+  color: white;
+}
+
+html.light {
+  background-color: white;
+  color: black;
+}
+
 /* 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

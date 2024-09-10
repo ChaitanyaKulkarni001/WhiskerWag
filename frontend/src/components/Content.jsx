@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { Navigate } from 'react-router-dom';
+
 const Content = ({ method }) => {
   const [data, setData] = useState([]);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [url, setUrl] = useState('');
-  function Logout(){
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  function Logout() {
     localStorage.clear();
-    return <Navigate to="/login" />
+    return <Navigate to="/login" />;
   }
+
   useEffect(() => {
-    handleURLS(); // Set the URL first
+    handleURLS();
   }, [method]);
 
   useEffect(() => {
     if (url) {
-      getData(); // Fetch data after the URL is set
+      getData();
     }
-  }, [url]);
+  }, [url, page]);
 
   const handleURLS = () => {
     if (method === 'posts') {
@@ -31,8 +36,18 @@ const Content = ({ method }) => {
 
   const getData = async () => {
     try {
-      const res = await api.get(url);
-      setData(res.data);
+      const res = await api.get(`${url}?page=${page}`);
+      console.log('res  ', res);
+      let newData;
+      if (method === 'posts') {
+        newData = res.data.results;
+      } else {
+        newData = res.data;
+      }
+      setData((prevData) => [...prevData, ...newData]);
+      if (!res.data.next) {
+        setHasMore(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -44,6 +59,35 @@ const Content = ({ method }) => {
       ...formData,
       [name]: files ? files[0] : value,
     });
+  };
+
+  const handleClick = async (postId, hasLiked) => {
+    try {
+      // Toggle like status
+      if (hasLiked) {
+        await api.delete(`/api/posts/${postId}/like/`);
+        // Update the like count and status in the state directly
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.id === postId
+              ? { ...item, user_has_liked: false, like_count: item.like_count - 1 }
+              : item
+          )
+        );
+      } else {
+        await api.post(`/api/posts/${postId}/like/`);
+        // Update the like count and status in the state directly
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.id === postId
+              ? { ...item, user_has_liked: true, like_count: item.like_count + 1 }
+              : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -70,6 +114,8 @@ const Content = ({ method }) => {
       if (res.status === 201) {
         alert('Item created successfully!');
         setFormData({});
+        setData([]);
+        setPage(1);
         getData();
         setShowForm(false);
       } else {
@@ -88,6 +134,8 @@ const Content = ({ method }) => {
       const res = await api.delete(`${url}delete/${id}`);
       if (res.status === 204) {
         alert('Item deleted successfully');
+        setData([]);
+        setPage(1);
         getData();
       } else {
         alert('Something went wrong!');
@@ -98,14 +146,22 @@ const Content = ({ method }) => {
     }
   };
 
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
   return (
-    <main className="flex-1 p-4">
-      <div className="bg-gray-300 p-6 rounded-lg shadow-lg mb-8 text-gray-900">
+    <main
+      className={`absolute inset-0 flex justify-center items-start ${
+        method !== 'posts' ? 'ml-[20%] mr-[25%]' : ''
+      }`}
+    >
+      <div className="bg-gray-300 p-6 rounded-lg shadow-lg text-gray-900">
         <button
           onClick={() => setShowForm(!showForm)}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-8 block mx-auto"
         >
-          {showForm ? 'Cancel' : 'Share Your Info'}
+          {showForm ? 'Cancel' : 'Share what your pets think!'}
         </button>
 
         {showForm && (
@@ -245,17 +301,26 @@ const Content = ({ method }) => {
                     )}
                   </>
                 )}
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+
+                <span
+                  className={`material-symbols-outlined cursor-pointer ${item.user_has_liked ? 'text-red-500' : 'text-gray-500'}`}
+                  onClick={() => handleClick(item.id, item.user_has_liked)}
                 >
-                  Delete
-                </button>
+                  {item.user_has_liked ? '🩷' : '🤍'}
+                </span>
+                <span>{item.like_count}</span>
               </li>
             ))}
           </ul>
+          {hasMore && (
+            <button
+              onClick={loadMore}
+              className="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline block mx-auto"
+            >
+              Load More
+            </button>
+          )}
         </div>
-        
       </div>
     </main>
   );

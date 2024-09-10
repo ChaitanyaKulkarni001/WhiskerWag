@@ -2,9 +2,25 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
 
 # User = get_user_model()
+
+# from django.db import models
+
+class UserInformations(models.Model):
+    
+    gender = models.CharField(
+        choices=[('Male', 'Male'), ('Female', 'Female'), ('Not to specify', 'Not to specify')]
+    )
+    age = models.PositiveIntegerField()
+    pet_breed = models.CharField(max_length=80)
+    pet_name = models.CharField(max_length=60)
+    pet_favorite_food = models.CharField(max_length=200)
+    img = models.ImageField(upload_to='images/')
+    username = models.CharField(max_length=50)
+    email = models.EmailField(max_length=254)
+    
+   
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -14,7 +30,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+
+class PostLike(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_likes')
+
+    class Meta:
+        unique_together = ('post', 'user')  # Ensure a user can only like a post once
+        
+    def __str__(self):
+        return f"{self.user.username} liked {self.post.title} post"
     
 class PetPal(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)

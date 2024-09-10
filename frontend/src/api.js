@@ -9,9 +9,12 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
 
     // Construct the full URL
+    console.log(token);
+    
     const fullURL = `${config.baseURL || ''}${config.url}`;
     console.log('Full URL:', fullURL);
-
+    // console.log();
+    
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

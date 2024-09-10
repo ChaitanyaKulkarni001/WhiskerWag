@@ -10,6 +10,9 @@ import PetPalHome from './PetPalsPages/PetPalHome'
 import DoctorDashboard from './DoctorsPages/DoctorDashboard'
 import TakeAppointment from './DoctorsPages/TakeAppointment'
 import Profile from './components/Profile'
+import Notifications from './components/Notifications'
+import Explore from './components/Explore'
+
 function Logout(){
   localStorage.clear();
   return <Navigate to="/login" />
@@ -39,6 +42,8 @@ function App() {
         <Route path='/petpal/home' element={<PetPalHome/>} />
         <Route path='/takeappointment' element={<TakeAppointment/>} />
         <Route path='/myprofile' element={<Profile/>}/>
+        <Route path='/explore' element={<Explore/>}/>
+        <Route path='/mynotifications' element={<Notifications/>}/>
         <Route path='/doc' element={
         
           // <Protectedroute>

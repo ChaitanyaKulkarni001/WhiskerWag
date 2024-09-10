@@ -23,9 +23,9 @@ const DoctorDashboard = () => {
 
             console.log(res.data)
             
-            if (res.data[0].logo) {
-                setLogo(res.data[0].logo); // Set logo if available in profile data
-            }
+            // if (res.data[0].logo) {
+            //     setLogo(res.data[0].logo); // Set logo if available in profile data
+            // }
         } catch (error) {
             await refreshToken();
             console.error('Error fetching profile:', error);
@@ -34,6 +34,10 @@ const DoctorDashboard = () => {
 
     const fetchAppointments = async () => {
         // Existing fetchAppointments logic
+        const res = await  api.get('/api/appointments/');
+        console.log("appoiintments ",res);
+        setAppointments(res.data)
+        
     };
 
     const handleFileChange = (e) => {
@@ -71,6 +75,8 @@ const DoctorDashboard = () => {
 
     const handleLogout = () => {
         // Existing handleLogout logic
+        localStorage.clear();
+        navigate('/login');
     };
 
     const renderContent = () => {

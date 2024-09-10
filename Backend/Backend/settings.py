@@ -31,21 +31,22 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 # Application definition
 
 INSTALLED_APPS = [
+    'api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
     'rest_framework',
     'corsheaders',
+    # 'auth.User'
     
 ]
 
@@ -89,15 +90,23 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
         # "ENGINE": "django.db.backends.mysql",
+        # "ENGINE": "django.db.backends.postgresql",
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": 'WhiskerWag',
+        
+        # "NAME": 'WhiskerWag2',
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PWD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        
         # "NAME": 'postgres',
-        # "NAME": 'practise',
-        "USER": 'postgres',
-        # "USER": 'root',
-        "PASSWORD": 'root',
-        "HOST": 'localhost',
-        "PORT": '5432',
+        # # "NAME": 'practise',
+        # "USER": 'postgres',
+        # # "USER": 'root',
+        # "PASSWORD": 'root',
+        # "HOST": 'localhost',
+        # "PORT": '5432',
     }
 }
 
@@ -151,3 +160,5 @@ MEDIA_ROOT = '/media/'
 # MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+
+# AUTH_USER_MODEL = 'api.CustomUser'
