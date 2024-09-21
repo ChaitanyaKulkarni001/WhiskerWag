@@ -213,3 +213,99 @@ def toggle_like_post(request, post_id):
 
 
 
+
+
+
+
+
+from rest_framework.views import APIView
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure the user is authenticated
+    print("profile view")
+    def get(self, request, format=None):
+        # print("hi")
+        user = request.user
+        print("user is ",user)
+        # print("Email is ",user.email)
+
+        
+            # Get the UserInformations for the authenticated user
+        user_info = UserInformations.objects.get(username=user)
+        # print("usdrinfo ",user_info)
+        user_serializer = UserSerializer(user)
+        user_info_serializer = UserInformationsSerializer(user_info)
+        # print ("INFO",user_info_serializer)
+        combined_data = {**user_serializer.data, **user_info_serializer.data}
+        return Response(combined_data, status=status.HTTP_200_OK)
+        # except UserInformations.DoesNotExist:
+        #     return Response({'detail': 'User information not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, format=None):
+        user = request.user
+
+        try:
+            # Get the UserInformations for the authenticated user
+            user_info = UserInformations.objects.get(username=user)
+        except UserInformations.DoesNotExist:
+            return Response({'detail': 'User information not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Partial update for user and user_info
+        # user_serializer = UserSerializer(user, data=request.data, partial=True)
+        user_info_serializer = UserInformationsSerializer(user_info, data=request.data, partial=True)
+
+        if  user_info_serializer.is_valid():
+            
+            user_info_serializer.save()
+            return Response(user_info_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                
+                'user_info_errors': user_info_serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+            
+            
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+
+
+
+@api_view(['POST'])
+def send_email(request):
+    data = request.data
+    name = data.get('name')
+    email = data.get('email')
+    message = data.get('message')
+
+    # Send email
+    subject = f"New message from {name}"
+    body = f"Message: {message}\n\nFrom: {email}"
+
+    email_msg = EmailMessage(
+        subject,
+        body,
+        'your-email@gmail.com',  # Your email (sender)
+        ['your-email@gmail.com'],  # Recipient(s)
+        reply_to=[email],  # This will set the user's email as the reply-to
+    )
+
+    email_msg.send()
+
+    return Response({'message': 'Email sent successfully!'})
+
+
+
+class checkUsername(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        username = request.query_params.get('username')
+        if not username:
+            return Response({'msg': 'Username parameter is required'}, status=400)
+        
+        # Check if the username already exists
+        if User.objects.filter(username=username).exists():
+            return Response({'msg': 'Username already taken'}, status=200)
+        else:
+            return Response({'msg': 'Username available'}, status=200)

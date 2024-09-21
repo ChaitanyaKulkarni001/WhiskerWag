@@ -10,13 +10,14 @@ from django.contrib.auth.models import User
 class UserInformations(models.Model):
     
     gender = models.CharField(
+        max_length=20, 
         choices=[('Male', 'Male'), ('Female', 'Female'), ('Not to specify', 'Not to specify')]
     )
     age = models.PositiveIntegerField()
-    pet_breed = models.CharField(max_length=80)
-    pet_name = models.CharField(max_length=60)
-    pet_favorite_food = models.CharField(max_length=200)
-    img = models.ImageField(upload_to='images/')
+    pet_breed = models.CharField(max_length=80 , blank=True)
+    pet_name = models.CharField(max_length=60,blank=True)
+    pet_favorite_food = models.CharField(max_length=200,blank=True)
+    img = models.ImageField(upload_to='images/', null=True, blank=True)
     username = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
     

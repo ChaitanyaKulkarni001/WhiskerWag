@@ -12,7 +12,7 @@ import TakeAppointment from './DoctorsPages/TakeAppointment'
 import Profile from './components/Profile'
 import Notifications from './components/Notifications'
 import Explore from './components/Explore'
-
+import ContactForm from './components/ContactForm'
 function Logout(){
   localStorage.clear();
   return <Navigate to="/login" />
@@ -29,6 +29,8 @@ function App() {
     <>
     
     <BrowserRouter>
+    
+
       <Routes>
         <Route path="/" element={
           <Protectedroute>
@@ -44,14 +46,16 @@ function App() {
         <Route path='/myprofile' element={<Profile/>}/>
         <Route path='/explore' element={<Explore/>}/>
         <Route path='/mynotifications' element={<Notifications/>}/>
+        <Route path='/feedback' element={<ContactForm/>}/>
         <Route path='/doc' element={
-        
+          
           // <Protectedroute>
-            <DoctorDashboard/>
+          <DoctorDashboard/>
           // </Protectedroute>} />}
         }/>
         <Route path='*' element={<NotFound/>} />
       </Routes>
+       
     </BrowserRouter>
     </>
   )

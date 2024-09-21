@@ -6,8 +6,8 @@ from .views import DoctorViewSet, AppointmentViewSet,check_doctor_status,GetInfo
 router = DefaultRouter()
 router.register(r'doctors', DoctorViewSet)
 router.register(r'appointments', AppointmentViewSet)
-router2 = DefaultRouter()
-router2.register(r'profile', ProfileUpdateView, basename='profile')
+# router2 = DefaultRouter()
+# router2.register(r'profile', ProfileUpdateView, basename='profile')
 # router2 = DefaultRouter()
 # router2.register(r'doctors', DoctorViewSet)
 urlpatterns = [
@@ -29,7 +29,12 @@ urlpatterns = [
     # path('posts/<int:post_id>/removelike/', views.removelike_post, name='removelike_post'),
     # path('profile/', ProfileUpdateView.as_view() ), 
     # path('get_doctors/', DoctorViewSet.as_view()),
-     path('', include(router2.urls)),
+    #  path('', include(router2.urls)),
     
     path('userinformation/', UserInformationView.as_view()),
+    
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('send-email/', views.send_email, name='send_email'),
+    
+    path('checkusername/', views.checkUsername.as_view(), name='CheckUsername'),
 ]

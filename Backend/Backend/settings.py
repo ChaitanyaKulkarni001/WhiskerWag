@@ -84,14 +84,17 @@ WSGI_APPLICATION = 'Backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+import pymysql
 
+# Ensure pymysql is used as MySQLdb
+pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
         # "ENGINE": "django.db.backends.mysql",
         # "ENGINE": "django.db.backends.postgresql",
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.db.backends.mysql",
         
         # "NAME": 'WhiskerWag2',
         "NAME": os.getenv("DB_NAME"),
@@ -99,7 +102,9 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PWD"),
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT"),
-        
+        #  "OPTIONS": {
+        #     'sslmode': os.getenv("DB_SSLMODE","require"),  # Set SSL mode based on environment variable
+        # }
         # "NAME": 'postgres',
         # # "NAME": 'practise',
         # "USER": 'postgres',
@@ -162,3 +167,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
 
 # AUTH_USER_MODEL = 'api.CustomUser'
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Use the SMTP server of your email provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'kulkarnichaitanya001@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'ydqj zygj qfez wfdd'  # Replace with your email password or app password
+# EMAIL_HOST_PASSWORD = 'Vishnu@WhiskerWag'  # Replace with your email password or app password
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -66,9 +66,10 @@ class PostLikeSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     user_has_liked = serializers.SerializerMethodField()
+    author_name = serializers.CharField(source='author.username', read_only=True)
     class Meta:
         model = Post
-        fields = ['id','title','content','created_at','author','img', 'like_count', 'user_has_liked']
+        fields = ['id','title','content','created_at','author_name','author','img', 'like_count', 'user_has_liked']
         extra_kwargs = {'author': {'read_only':True}}
         
     def get_like_count(self, obj):
