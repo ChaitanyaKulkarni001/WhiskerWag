@@ -2,6 +2,25 @@
 
 WhiskerWag is a pet-themed platform designed for pet lovers to share their experiences and knowledge. Built with modern technologies, this project aims to create an engaging and user-friendly experience for pet owners.
 
+
+## 📸 Screenshots
+
+Here are some previews of WhiskerWag:
+
+![Login](Landing.png)
+
+![About](About.png)
+
+![Doctor Dashboard](DocDash.png)
+
+![DarkMode Petpal](petpalDarkMode.png)
+
+![Profile](profile.png)
+
+![Appointment Feed](Appointment.png)
+
+![Home View](hme.png)
+
 ## 📦 Technologies Used
 
 - **Frontend**: 
